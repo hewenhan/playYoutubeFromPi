@@ -5,3 +5,17 @@ It is well known that the media capabilities of Raspberry Pi are decent, but due
 ```bash
 ./ytplayer.py <youtube_url>
 ```
+
+## Advanced useage:
+
+### Use Netscape cookie file:
+
+Save the cookie file from your browser to a file named `cookie.txt` in the same directory as the script.
+
+### select recommended video list
+
+First you need to save the cookie file from your browser to a file named `cookie.txt` in the same directory as the script. Then you can use the following command to select the recommended video list:
+
+```bash
+./ytplayer.py
+```
