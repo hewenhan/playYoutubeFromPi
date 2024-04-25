@@ -44,7 +44,7 @@ if [ -z "$url" ]; then
 	echo "No video url input. Get the video list from the Youtube."
 	# $yt_dlp --cookies "$cookiePath" --lazy-playlist --flat-playlist --playlist-end 20 --skip-download --print "%(original_url)s;%(title)s;%(uploader)s" "https://www.youtube.com/"
 
-	urlListStr=$($yt_dlp --cookies "$cookiePath" --lazy-playlist --flat-playlist --playlist-end 20 --skip-download --print "%(original_url)s;%(title)s;%(uploader)s" "https://www.youtube.com/")
+	urlListStr=$($yt_dlp --cookies "$cookiePath" --lazy-playlist --flat-playlist --playlist-end 50 --skip-download --print "%(original_url)s;%(title)s;%(uploader)s" "https://www.youtube.com/")
 
 	dataLineList=()
 	while IFS= read -r line; do
