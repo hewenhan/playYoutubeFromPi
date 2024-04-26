@@ -91,7 +91,7 @@ if [ "$choice" != "y" ]; then
 fi
 
 # Get all media quality
-mediaQuality=$($yt_dlp -F "$url")
+mediaQuality=$($yt_dlp --cookies "$cookiePath" -F "$url")
 
 # Show all the video quality
 echo "$mediaQuality" | grep "video only"
