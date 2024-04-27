@@ -39,12 +39,23 @@ else
 	url=$1
 fi
 
+pageLimit=50
+
 # if url empty
 if [ -z "$url" ]; then
-	echo "No video url input. Get the video list from the Youtube."
-	# $yt_dlp --cookies "$cookiePath" --lazy-playlist --flat-playlist --playlist-end 20 --skip-download --print "%(original_url)s;%(title)s;%(duration_string);%(uploader)s" "https://www.youtube.com/"
+	urlListStr=""
 
-	urlListStr=$($yt_dlp --cookies "$cookiePath" --lazy-playlist --flat-playlist --playlist-end 50 --skip-download --print "%(original_url)s;%(title)s;%(duration_string)s;%(uploader)s" "https://www.youtube.com/")
+	# ask user to input search keyword
+	echo "Enter the search keyword(Default: empty to get the recommended video list)"
+	read keyword
+	searchArg="ytsearch$pageLimit:$keyword"
+
+	if [ -z "$keyword" ]; then
+		echo "No search keyword input. Read the recommended video list from the Youtube."
+		urlListStr=$($yt_dlp --cookies "$cookiePath" --lazy-playlist --flat-playlist --playlist-end $pageLimit --skip-download --print "%(original_url)s;%(title)s;%(duration_string)s;%(uploader)s" "https://www.youtube.com/")
+	else
+		urlListStr=$($yt_dlp --cookies "$cookiePath" --lazy-playlist --flat-playlist --skip-download --print "%(original_url)s;%(title)s;%(duration_string)s;%(uploader)s" "$searchArg")
+	fi
 
 	dataLineList=()
 	while IFS= read -r line; do
