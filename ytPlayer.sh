@@ -110,7 +110,7 @@ echo "Do you want to select the media quality? (y/n) Default: n"
 read choice
 
 if [ "$choice" != "y" ]; then
-	$yt_dlp -v --cookies "$cookiePath" $ytDlpOptions -o - "$url" | mpv $mpvOptions -
+	$yt_dlp --cookies "$cookiePath" $ytDlpOptions -o - "$url" | mpv $mpvOptions -
 	exit
 fi
 
