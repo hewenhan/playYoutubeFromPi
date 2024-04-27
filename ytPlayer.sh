@@ -42,9 +42,9 @@ fi
 # if url empty
 if [ -z "$url" ]; then
 	echo "No video url input. Get the video list from the Youtube."
-	# $yt_dlp --cookies "$cookiePath" --lazy-playlist --flat-playlist --playlist-end 20 --skip-download --print "%(original_url)s;%(title)s;%(uploader)s" "https://www.youtube.com/"
+	# $yt_dlp --cookies "$cookiePath" --lazy-playlist --flat-playlist --playlist-end 20 --skip-download --print "%(original_url)s;%(title)s;%(duration_string);%(uploader)s" "https://www.youtube.com/"
 
-	urlListStr=$($yt_dlp --cookies "$cookiePath" --lazy-playlist --flat-playlist --playlist-end 50 --skip-download --print "%(original_url)s;%(title)s;%(uploader)s" "https://www.youtube.com/")
+	urlListStr=$($yt_dlp --cookies "$cookiePath" --lazy-playlist --flat-playlist --playlist-end 50 --skip-download --print "%(original_url)s;%(title)s;%(duration_string)s;%(uploader)s" "https://www.youtube.com/")
 
 	dataLineList=()
 	while IFS= read -r line; do
@@ -55,7 +55,7 @@ if [ -z "$url" ]; then
 	for item in "${dataLineList[@]}"; do
 		IFS=';' read -r -a data <<<"$item"
 		urlList+=("${data[0]}")
-		echo idx: ${#urlList[@]} - ${data[1]} - ${data[2]}
+		echo ${#urlList[@]} - ${data[1]} - ${data[2]} - ${data[3]}
 	done
 
 	# Ask user to select the video
@@ -64,6 +64,19 @@ if [ -z "$url" ]; then
 	url=${urlList[$idx - 1]}
 	echo "Selected video: $url"
 fi
+
+
+
+# Ask user set start time
+echo "Do you want to set the yt-dlp start time? (hh:mm:ss) Default: 00:00:00"
+read startTime
+
+if [ -z "$startTime" ]; then
+	startTime="00:00:00"
+fi
+
+ytDlpOptions="--download-sections \"*$startTime-inf\""
+mpvOptions+="--start=$startTime"
 
 # Ask user select subtitles
 echo "Do you want to enable subtitles? (y/n) Default: n"
@@ -86,7 +99,9 @@ echo "Do you want to select the media quality? (y/n) Default: n"
 read choice
 
 if [ "$choice" != "y" ]; then
-	$yt_dlp --cookies "$cookiePath" -o - "$url" | mpv $mpvOptions -
+	# $yt_dlp --cookies "$cookiePath" $ytDlpOptions -o - "$url" | mpv $mpvOptions -
+	# echo command
+	echo "$yt_dlp --cookies \"$cookiePath\" $ytDlpOptions -o - \"$url\" | mpv $mpvOptions -"
 	exit
 fi
 
@@ -114,4 +129,4 @@ if [ -z "$audio" ]; then
 fi
 
 # Stream the video to mpv
-$yt_dlp --cookies "$cookiePath" -f "$quality"+"$audio" -o - "$url" | mpv $mpvOptions -
+$yt_dlp --cookies "$cookiePath" $ytDlpOptions -f "$quality"+"$audio" -o - "$url" | mpv $mpvOptions -
