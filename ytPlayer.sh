@@ -30,7 +30,9 @@ if ! command -v mpv &>/dev/null; then
 fi
 
 # some default options for mpv
-mpvOptions="--fs --no-ytdl "
+mpvOptions=()
+mpvOptions+=(--fs)
+mpvOptions+=(--no-ytdl)
 
 url=""
 if [ -p /dev/stdin ]; then
@@ -86,8 +88,9 @@ if [ -z "$startTime" ]; then
 	startTime="00:00:00"
 fi
 
-ytDlpOptions=" --download-sections *$startTime-inf"
-mpvOptions+=" --start=$startTime"
+ytDlpOptions=()
+ytDlpOptions+=(--download-sections "*$startTime-inf")
+mpvOptions+=(--start=$startTime)
 
 # Ask user select subtitles
 echo "Do you want to enable subtitles? (y/n) Default: n"
@@ -102,7 +105,7 @@ if [ "$subtitles" = "y" ]; then
 	$yt_dlp --cookies "$cookiePath" --write-auto-subs --write-subs --sub-langs $code -o "/tmp/$randomName.srt" --skip-download "$url"
 	subPath="/tmp/$randomName.srt.$code.vtt"
 	echo "Subtitles be saved to $subPath"
-	mpvOptions+=" --sub-file=\"$subPath\""
+	mpvOptions+=(--sub-file="$subPath")
 fi
 
 # Ask user select the media quality or stream the video with default quality
@@ -110,7 +113,7 @@ echo "Do you want to select the media quality? (y/n) Default: n"
 read choice
 
 if [ "$choice" != "y" ]; then
-	$yt_dlp --cookies "$cookiePath" $ytDlpOptions -o - "$url" | mpv $mpvOptions -
+	$yt_dlp --cookies "$cookiePath" "${ytDlpOptions[@]}" -o - "$url" | mpv "${mpvOptions[@]}" -
 	exit
 fi
 
@@ -138,4 +141,4 @@ if [ -z "$audio" ]; then
 fi
 
 # Stream the video to mpv
-$yt_dlp --cookies "$cookiePath" $ytDlpOptions -f "$quality"+"$audio" -o - "$url" | mpv $mpvOptions -
+$yt_dlp --cookies "$cookiePath" "${ytDlpOptions[@]}" -f "$quality"+"$audio" -o - "$url" | mpv "${mpvOptions[@]}" -
