@@ -4,11 +4,11 @@
 # Usage: ytPlayer.sh <youtube video url>
 
 # Set working directory
-workDir="/workspace/playYoutubeFromPi/"
+workDir=$(realpath $(dirname $0))
 cd $workDir
 
 # Path to the cookies file
-cookiePath="/workspace/playYoutubeFromPi/cookies.txt"
+cookiePath=$workDir/cookies.txt
 
 # Check if yt-dlp is installed
 yt_dlp="$workDir/venv/yt-dlp"
